@@ -1,20 +1,23 @@
+class MP3Importer 
 
+  attr_accessor :path
 
-class MP3Importer
+  @@all = []
 
-    attr_accessor :path
+  def initialize(path)
+      @path = path 
+      @@all << self
+  end 
+
+  def self.all 
+      @@all
+  end 
   
-    def initialize(path)
-      @path = path
-    end
-  
-    def files
-      @files ||= Dir.entries(@path)
-      @files.delete_if {|file| file == "." || file == ".."}
-    end
-
-    def import
-      files.each {|song| Song.new_by_filename(song)}
-    end
-  
+  def files
+      @files ||= Dir.glob("#{path}/*.mp3").collect{ |f| f.gsub("#{path}/", "") }
   end
+
+  def import
+      files.each{|f| Song.new_by_filename(f)}
+  end 
+end 
